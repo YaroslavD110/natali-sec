@@ -1,25 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Dimmer, Loader } from 'semantic-ui-react';
+
 import './App.css';
+import { composeData } from './composeData';
+import { Section } from './composeData/parseData';
+import { DataVisualizer } from './DataVisualizer';
 
 function App() {
+  const [data, setData] = React.useState<Section[] | null>(null);
+
+  React.useEffect(() => {
+    composeData()
+      .then(setData);
+  }, []);
+
+  if (!data) {
+    return (
+      <Dimmer active>
+        <Loader indeterminate>Зчекайте будь ласка, дані завантажуться!</Loader>
+      </Dimmer>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DataVisualizer data={data} />
   );
 }
 
